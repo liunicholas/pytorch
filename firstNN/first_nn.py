@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # File location to save to or load from
-MODEL_SAVE_PATH = './saves/cifar_net_56.pth'
+MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
-TRAIN_EPOCHS = 0
+TRAIN_EPOCHS = 20
 # If you want to save the model at every epoch set to 'True'
 SAVE_EPOCHS = False
 
@@ -29,16 +29,24 @@ class Net(nn.Module):
 
     def __init__(self):
         super(Net, self).__init__()
-        # 1 input image channel
-        # 6 output channels
-        # 3x3 square convolution
+        # Input: 32 x 32 x 3 = 3072
 
-        # Kernel:
+        # Kernel: 5 x 5, Stride: (1, 1), output 6 layers, padding = 0 px
+        # So Output size = 28 x 28 x 6 = 4704
         self.conv1 = nn.Conv2d(3, 6, 5)
+
+        # Kernel: 2 x 2, Stride: (2, 2)
+        # So Output size = 14 x 14 x 6 = 1176
         self.pool = nn.MaxPool2d(2, 2)
+
+        # Kernel: 5 x 5, Stride: (1, 1), output 16 layers, padding = 0 px
+        # So output size = 10 x 10 x 16 = 1600
         self.conv2 = nn.Conv2d(6, 16, 5)
 
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        # Repeat MaxPool2d
+        # So Output size = 5 x 5 x 16 = 400
+
+        self.fc1 = nn.Linear(400, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
@@ -46,7 +54,7 @@ class Net(nn.Module):
         # Max pooling over a 2x2 window
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
+        x = x.view(-1, 400)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -60,10 +68,11 @@ def imshow(img):
 
 print("[INFO] Loading Traning and Test Datasets.")
 
-transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-    ])
+# transform = transforms.Compose([
+#         transforms.ToTensor(),
+#         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+#     ])
+transform = transforms.ToTensor()
 trainset = torchvision.datasets.CIFAR10(root = './data', train = True,
     download = True, transform = transform)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size = 4,
