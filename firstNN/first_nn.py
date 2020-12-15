@@ -7,6 +7,7 @@ start = process_time()
 # torchvision 0.8.1
 # matplotlib 3.3.3
 # numpy 1.19.4
+# opencv-python 4.4.0
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -15,13 +16,18 @@ import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
-TRAIN_EPOCHS = 20
-# If you want to save the model at every epoch set to 'True'
+TRAIN_EPOCHS = 50
+# If you want to save the model at every epoch in a subfolder set to 'True'
 SAVE_EPOCHS = False
+# If you jsut want to save the final output in current folder, set to 'True'
+SAVE_LAST = False
+BATCH_SIZE_TRAIN = 4
+BATCH_SIZE_TEST = 4
 
 print("[INFO] Done importing packages.")
 
@@ -37,27 +43,58 @@ class Net(nn.Module):
 
         # Kernel: 2 x 2, Stride: (2, 2)
         # So Output size = 14 x 14 x 6 = 1176
-        self.pool = nn.MaxPool2d(2, 2)
+        self.pool2 = nn.MaxPool2d(2, 2)
+
+        # For trying out 3 x 3 kernel, Stride: (3, 3)
+        # self.pool3 = nn.MaxPool2d(3, 3)
 
         # Kernel: 5 x 5, Stride: (1, 1), output 16 layers, padding = 0 px
         # So output size = 10 x 10 x 16 = 1600
         self.conv2 = nn.Conv2d(6, 16, 5)
 
+        # The convolution below made sense as a third convolution with:
+        # conv1 = 7x7, S=1, P=0, Layers = 6
+        # conv2 = 3x3, S=1, P=0, Layers = 16
+        # self.conv3 = nn.Conv2d(16, 16, 3)
+
+        # Experiment with a couple of different Dropout layers
+        # These will not change input/output sizes.
+        # self.dropout10 = nn.Dropout(p=0.1)
+        # self.dropout20 = nn.Dropout(p=0.2)
+        # self.dropout50 = nn.Dropout(p=0.5)
+
+        # Activation function to use
+        self.activation = F.relu
+
+        # Batch Normalization functions
+        # self.batchNormalization6 = nn.BatchNorm2d(6)
+        # self.batchNormalization16 = nn.BatchNorm2d(16)
+        # self.batchNormalization120 = nn.BatchNorm1d(120)
+        # self.batchNormalization84 = nn.BatchNorm1d(84)
+
         # Repeat MaxPool2d
-        # So Output size = 5 x 5 x 16 = 400
+        # Then Output size = 5 x 5 x 16 = 400
 
         self.fc1 = nn.Linear(400, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
-        # Max pooling over a 2x2 window
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
+        x = self.activation(self.conv1(x))
+        # x = self.batchNormalization6(x)
+        x = self.pool2(x)
+        # x = self.dropout10(x)
+        x = self.activation(self.conv2(x))
+        # x = self.batchNormalization16(x)
+        x = self.pool2(x)
+        # x = self.dropout20(x)
         x = x.view(-1, 400)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
+        x = self.activation(self.fc1(x))
+        # x = self.batchNormalization120(x)
+        x = self.activation(self.fc2(x))
+        # x = self.batchNormalization84(x)
         x = self.fc3(x)
+        # x = self.dropout50(x)
         return x
 
 def imshow(img):
@@ -75,12 +112,12 @@ print("[INFO] Loading Traning and Test Datasets.")
 transform = transforms.ToTensor()
 trainset = torchvision.datasets.CIFAR10(root = './data', train = True,
     download = True, transform = transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size = 4,
-    shuffle = True)
+trainloader = torch.utils.data.DataLoader(trainset,
+    batch_size = BATCH_SIZE_TRAIN, shuffle = True)
 testset = torchvision.datasets.CIFAR10(root = './data', train = False,
     download = True, transform = transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size = 4,
-    shuffle = True)
+testloader = torch.utils.data.DataLoader(testset,
+    batch_size = BATCH_SIZE_TEST, shuffle = True)
 
 print("[INFO] Done loading data.")
 
@@ -115,13 +152,24 @@ for epoch in range(TRAIN_EPOCHS):
         optimizer.step()
 
         running_loss += loss.item()
-        if i % 2000 == 1999:
+        if i % 500 == 499:
             print(f"Epoch: {epoch + 1}, Mini-Batches Processed: {i + 1:5}, Loss: {running_loss/2000:3.5}")
             running_loss = 0.0
 
     now = process_time()
     print(f"[TIMER] Process Time so far: {now - start:.6} seconds")
     print("Starting validation...")
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for data in trainloader:
+            images, labels = data
+            outputs = net(images)
+            # For overall accuracy
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+    print(f"[TRAINING] {correct} out of {total}")
     correct = 0
     total = 0
     with torch.no_grad():
@@ -139,7 +187,8 @@ for epoch in range(TRAIN_EPOCHS):
 
 if TRAIN_EPOCHS:
     print("[INFO] Finished training.")
-    torch.save(net.state_dict(), MODEL_SAVE_PATH)
+    if SAVE_LAST:
+        torch.save(net.state_dict(), MODEL_SAVE_PATH)
 else:
     net.load_state_dict(torch.load(MODEL_SAVE_PATH))
 
@@ -170,9 +219,12 @@ with torch.no_grad():
         # For class-by-class accuracy
         _, predicted = torch.max(outputs, 1)
         c = (predicted == labels).squeeze()
-        for i in range(4):
+        for i in range(BATCH_SIZE_TEST):
             label = labels[i]
-            class_correct[label] += c[i].item()
+            try:
+                class_correct[label] += c[i].item()
+            except:
+                class_correct[label] += c.item()
             class_total[label] += 1
 
 print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%")
@@ -182,3 +234,17 @@ for i in range(10):
 
 now = process_time()
 print(f"[TIMER] Total Process Time: {now - start:.8} seconds")
+
+# print(images)
+
+# sj = cv2.imread('Serena.jpg')
+# sj = cv2.resize(sj, (32, 32), interpolation = cv2.INTER_AREA)
+# tmp = np.zeros((1, sj.shape[2], sj.shape[0], sj.shape[0]), dtype=float)
+# for i, row in enumerate(sj):
+#     for j, col in enumerate(row):
+#         for k, entry in enumerate(col):
+#             tmp[0][k][i][j] = entry/255.0
+# sjTensor = torch.Tensor(tmp)
+# outputs = net(sjTensor)
+# _, predicted = torch.max(outputs, 1)
+# print(classes[predicted])
