@@ -259,7 +259,7 @@ for i in range(10):
 now = process_time()
 print(f"[TIMER] Total Process Time: {now - start:.8} seconds")
 print(f"[TIMER] Total Process Time: {now - start:.8} seconds", file=fout, flush=True)
-close(fout)
+fout.close()
 
 # print(images)
 
