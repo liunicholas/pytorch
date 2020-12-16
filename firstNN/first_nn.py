@@ -1,6 +1,5 @@
 # Python 3.8.6
 from time import process_time
-
 start = process_time()
 
 # torch 1.7.0
@@ -18,6 +17,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
+fout = open('test2.txt', 'w')
+
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
@@ -31,8 +32,10 @@ BATCH_SIZE_TEST = 4
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
+print(device, file=fout)
 
 print("[INFO] Done importing packages.")
+print("[INFO] Done importing packages.", file=fout)
 
 class Net(nn.Module):
 
@@ -42,7 +45,7 @@ class Net(nn.Module):
 
         # Kernel: 5 x 5, Stride: (1, 1), output 6 layers, padding = 0 px
         # So Output size = 28 x 28 x 6 = 4704
-        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.conv1 = nn.Conv2d(3, 36, 5)
 
         # Kernel: 2 x 2, Stride: (2, 2)
         # So Output size = 14 x 14 x 6 = 1176
@@ -53,7 +56,7 @@ class Net(nn.Module):
 
         # Kernel: 5 x 5, Stride: (1, 1), output 16 layers, padding = 0 px
         # So output size = 10 x 10 x 16 = 1600
-        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.conv2 = nn.Conv2d(36, 16, 5)
 
         # The convolution below made sense as a third convolution with:
         # conv1 = 7x7, S=1, P=0, Layers = 6
@@ -107,6 +110,7 @@ def imshow(img):
     plt.show()
 
 print("[INFO] Loading Traning and Test Datasets.")
+print("[INFO] Loading Traning and Test Datasets.", file=fout)
 
 # transform = transforms.Compose([
 #         transforms.ToTensor(),
@@ -123,6 +127,7 @@ testloader = torch.utils.data.DataLoader(testset,
     batch_size = BATCH_SIZE_TEST, shuffle = True)
 
 print("[INFO] Done loading data.")
+print("[INFO] Done loading data.", file=fout)
 
 classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
@@ -133,8 +138,9 @@ classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # imshow(torchvision.utils.make_grid(images))
 
 net = Net()
-net.to(device)
+# net.to(device)
 print("Network:", net)
+print("Network:", net, file=fout)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum = 0.9)
@@ -143,10 +149,13 @@ for epoch in range(TRAIN_EPOCHS):
     now = process_time()
     print(f"[TIMER] Process Time so far: {now - start:.6} seconds")
     print(f"Beginning Epoch {epoch + 1}...")
+    print(f"[TIMER] Process Time so far: {now - start:.6} seconds", file=fout)
+    print(f"Beginning Epoch {epoch + 1}...", file=fout, flush=True)
     running_loss = 0.0
 
     for i, data in enumerate(trainloader, 0):
-        inputs, labels = data[0].to(device), data[1].to(device)
+        # inputs, labels = data[0].to(device), data[1].to(device)\
+        inputs, labels = data
 
         optimizer.zero_grad()
 
@@ -157,40 +166,48 @@ for epoch in range(TRAIN_EPOCHS):
 
         running_loss += loss.item()
         if i % 500 == 499:
-            print(f"Epoch: {epoch + 1}, Mini-Batches Processed: {i + 1:5}, Loss: {running_loss/2000:3.5}")
+            # print(f"Epoch: {epoch + 1}, Mini-Batches Processed: {i + 1:5}, Loss: {running_loss/2000:3.5}")
+            print(f"Epoch: {epoch + 1}, Mini-Batches Processed: {i + 1:5}, Loss: {running_loss/2000:3.5}", file=fout, flush=True)
             running_loss = 0.0
 
     now = process_time()
     print(f"[TIMER] Process Time so far: {now - start:.6} seconds")
     print("Starting validation...")
+    print(f"[TIMER] Process Time so far: {now - start:.6} seconds", file=fout)
+    print("Starting validation...", file=fout, flush=True)
     correct = 0
     total = 0
     with torch.no_grad():
         for data in trainloader:
-            images, labels = data[0].to(device), data[1].to(device)
+            # images, labels = data[0].to(device), data[1].to(device)
+            images, labels = data
             outputs = net(images)
             # For overall accuracy
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
     print(f"[TRAINING] {correct} out of {total}")
+    print(f"[TRAINING] {correct} out of {total}", file=fout)
     correct = 0
     total = 0
     with torch.no_grad():
         for data in testloader:
-            images, labels = data[0].to(device), data[1].to(device)
+            # images, labels = data[0].to(device), data[1].to(device)
+            images, labels = data
             outputs = net(images)
             # For overall accuracy
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
     print(f"[VALIDATION] {correct} out of {total}")
+    print(f"[VALIDATION] {correct} out of {total}", file=fout, flush=True)
     if SAVE_EPOCHS:
         torch.save(net.state_dict(), f"./saves/cifar_net_{epoch + 1}.pth")
 
 
 if TRAIN_EPOCHS:
     print("[INFO] Finished training.")
+    print("[INFO] Finished training.", file=fout, flush=True)
     if SAVE_LAST:
         torch.save(net.state_dict(), MODEL_SAVE_PATH)
 else:
@@ -214,7 +231,8 @@ class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
 with torch.no_grad():
     for data in testloader:
-        images, labels = data[0].to(device), data[1].to(device)
+        # images, labels = data[0].to(device), data[1].to(device)
+        images, labels = data
         outputs = net(images)
         # For overall accuracy
         _, predicted = torch.max(outputs.data, 1)
@@ -232,12 +250,16 @@ with torch.no_grad():
             class_total[label] += 1
 
 print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%")
+print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%", file=fout)
 
 for i in range(10):
     print(f"Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.3}%")
+    print(f"Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.3}%", file=fout)
 
 now = process_time()
 print(f"[TIMER] Total Process Time: {now - start:.8} seconds")
+print(f"[TIMER] Total Process Time: {now - start:.8} seconds", file=fout, flush=True)
+close(fout)
 
 # print(images)
 
