@@ -45,7 +45,7 @@ class Net(nn.Module):
 
         # Kernel: 5 x 5, Stride: (1, 1), output 6 layers, padding = 0 px
         # So Output size = 28 x 28 x 6 = 4704
-        self.conv1 = nn.Conv2d(3, 36, 5)
+        self.conv1 = nn.Conv2d(3, 6, 5)
 
         # Kernel: 2 x 2, Stride: (2, 2)
         # So Output size = 14 x 14 x 6 = 1176
@@ -56,7 +56,7 @@ class Net(nn.Module):
 
         # Kernel: 5 x 5, Stride: (1, 1), output 16 layers, padding = 0 px
         # So output size = 10 x 10 x 16 = 1600
-        self.conv2 = nn.Conv2d(36, 16, 5)
+        self.conv2 = nn.Conv2d(6, 16, 5)
 
         # The convolution below made sense as a third convolution with:
         # conv1 = 7x7, S=1, P=0, Layers = 6
