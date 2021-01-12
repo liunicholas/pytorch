@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-fout = open('test.txt', 'w')
+fout = open('test2.txt', 'w')
 
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
@@ -140,7 +140,7 @@ classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # imshow(torchvision.utils.make_grid(images))
 
 net = Net()
-# net.to(device)
+net.to(device)
 print("Network:", net)
 print("Network:", net, file=fout)
 
@@ -156,8 +156,8 @@ for epoch in range(TRAIN_EPOCHS):
     running_loss = 0.0
 
     for i, data in enumerate(trainloader, 0):
-        # inputs, labels = data[0].to(device), data[1].to(device)\
-        inputs, labels = data
+        inputs, labels = data[0].to(device), data[1].to(device)
+        # inputs, labels = data
 
         optimizer.zero_grad()
 
@@ -181,8 +181,8 @@ for epoch in range(TRAIN_EPOCHS):
     total = 0
     with torch.no_grad():
         for data in trainloader:
-            # images, labels = data[0].to(device), data[1].to(device)
-            images, labels = data
+            images, labels = data[0].to(device), data[1].to(device)
+            # images, labels = data
             outputs = net(images)
             # For overall accuracy
             _, predicted = torch.max(outputs.data, 1)
@@ -194,8 +194,8 @@ for epoch in range(TRAIN_EPOCHS):
     total = 0
     with torch.no_grad():
         for data in testloader:
-            # images, labels = data[0].to(device), data[1].to(device)
-            images, labels = data
+            images, labels = data[0].to(device), data[1].to(device)
+            # images, labels = data
             outputs = net(images)
             # For overall accuracy
             _, predicted = torch.max(outputs.data, 1)
@@ -233,8 +233,8 @@ class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
 with torch.no_grad():
     for data in testloader:
-        # images, labels = data[0].to(device), data[1].to(device)
-        images, labels = data
+        images, labels = data[0].to(device), data[1].to(device)
+        # images, labels = data
         outputs = net(images)
         # For overall accuracy
         _, predicted = torch.max(outputs.data, 1)
