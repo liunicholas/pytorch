@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-fout = open('test.txt', 'w')
+fout = open('test3.txt', 'w')
 
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
