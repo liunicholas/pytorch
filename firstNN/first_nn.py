@@ -4,6 +4,9 @@
 from time import process_time
 start = process_time()
 
+import time
+startTime = time.time()
+
 # torch 1.7.0
 # torchvision 0.8.1
 # matplotlib 3.3.3
@@ -19,7 +22,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-fout = open('test3.txt', 'w')
+fout = open('ryzen9.txt', 'w')
 
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
@@ -262,6 +265,8 @@ now = process_time()
 print(f"[TIMER] Total Process Time: {now - start:.8} seconds")
 print(f"[TIMER] Total Process Time: {now - start:.8} seconds", file=fout, flush=True)
 fout.close()
+
+print(f"run time: {time.time()-startTime}")
 
 # print(images)
 
