@@ -265,14 +265,14 @@ fout.close()
 
 # print(images)
 
-# sj = cv2.imread('Serena.jpg')
-# sj = cv2.resize(sj, (32, 32), interpolation = cv2.INTER_AREA)
-# tmp = np.zeros((1, sj.shape[2], sj.shape[0], sj.shape[0]), dtype=float)
-# for i, row in enumerate(sj):
-#     for j, col in enumerate(row):
-#         for k, entry in enumerate(col):
-#             tmp[0][k][i][j] = entry/255.0
-# sjTensor = torch.Tensor(tmp)
-# outputs = net(sjTensor)
-# _, predicted = torch.max(outputs, 1)
-# print(classes[predicted])
+sj = cv2.imread('test.jpg')
+sj = cv2.resize(sj, (32, 32), interpolation = cv2.INTER_AREA)
+tmp = np.zeros((1, sj.shape[2], sj.shape[0], sj.shape[0]), dtype=float)
+for i, row in enumerate(sj):
+    for j, col in enumerate(row):
+        for k, entry in enumerate(col):
+            tmp[0][k][i][j] = entry/255.0
+sjTensor = torch.Tensor(tmp)
+outputs = net(sjTensor)
+_, predicted = torch.max(outputs, 1)
+print(classes[predicted])
