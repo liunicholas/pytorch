@@ -1,0 +1,3 @@
+intelCorei5:
+ryzen 9 4900hs: 924.88
+rtx 2060: 1033.76
