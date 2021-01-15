@@ -27,13 +27,13 @@ fout = open('ryzen9.txt', 'w')
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
-TRAIN_EPOCHS = 20
+TRAIN_EPOCHS = 0
 # If you want to save the model at every epoch in a subfolder set to 'True'
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
-SAVE_LAST = True
+SAVE_LAST = False
 BATCH_SIZE_TRAIN = 4
-BATCH_SIZE_TEST = 4
+BATCH_SIZE_TEST = 1
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -230,54 +230,54 @@ else:
 # print('Predicted:',' '.join(f"{classes[predicted[j]]:5}" for j in range(4)))
 # imshow(torchvision.utils.make_grid(images))
 
-correct = 0
-total = 0
-class_correct = list(0. for i in range(10))
-class_total = list(0. for i in range(10))
-with torch.no_grad():
-    for data in testloader:
-        # images, labels = data[0].to(device), data[1].to(device)
-        images, labels = data
-        outputs = net(images)
-        # For overall accuracy
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-        # For class-by-class accuracy
-        _, predicted = torch.max(outputs, 1)
-        c = (predicted == labels).squeeze()
-        for i in range(BATCH_SIZE_TEST):
-            label = labels[i]
-            try:
-                class_correct[label] += c[i].item()
-            except:
-                class_correct[label] += c.item()
-            class_total[label] += 1
-
-print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%")
-print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%", file=fout)
-
-for i in range(10):
-    print(f"Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.3}%")
-    print(f"Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.3}%", file=fout)
-
-now = process_time()
-print(f"[TIMER] Total Process Time: {now - start:.8} seconds")
-print(f"[TIMER] Total Process Time: {now - start:.8} seconds", file=fout, flush=True)
-fout.close()
-
-print(f"run time: {time.time()-startTime}")
+# correct = 0
+# total = 0
+# class_correct = list(0. for i in range(10))
+# class_total = list(0. for i in range(10))
+# with torch.no_grad():
+#     for data in testloader:
+#         # images, labels = data[0].to(device), data[1].to(device)
+#         images, labels = data
+#         outputs = net(images)
+#         # For overall accuracy
+#         _, predicted = torch.max(outputs.data, 1)
+#         total += labels.size(0)
+#         correct += (predicted == labels).sum().item()
+#         # For class-by-class accuracy
+#         _, predicted = torch.max(outputs, 1)
+#         c = (predicted == labels).squeeze()
+#         for i in range(BATCH_SIZE_TEST):
+#             label = labels[i]
+#             try:
+#                 class_correct[label] += c[i].item()
+#             except:
+#                 class_correct[label] += c.item()
+#             class_total[label] += 1
+#
+# print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%")
+# print(f"Accuracy of the network on the 10000 test items: {100 * correct / total:.4}%", file=fout)
+#
+# for i in range(10):
+#     print(f"Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.3}%")
+#     print(f"Accuracy of {classes[i]}: {100 * class_correct[i] / class_total[i]:.3}%", file=fout)
+#
+# now = process_time()
+# print(f"[TIMER] Total Process Time: {now - start:.8} seconds")
+# print(f"[TIMER] Total Process Time: {now - start:.8} seconds", file=fout, flush=True)
+# fout.close()
+#
+# print(f"run time: {time.time()-startTime}")
 
 # print(images)
 
-# sj = cv2.imread('Serena.jpg')
-# sj = cv2.resize(sj, (32, 32), interpolation = cv2.INTER_AREA)
-# tmp = np.zeros((1, sj.shape[2], sj.shape[0], sj.shape[0]), dtype=float)
-# for i, row in enumerate(sj):
-#     for j, col in enumerate(row):
-#         for k, entry in enumerate(col):
-#             tmp[0][k][i][j] = entry/255.0
-# sjTensor = torch.Tensor(tmp)
-# outputs = net(sjTensor)
-# _, predicted = torch.max(outputs, 1)
-# print(classes[predicted])
+sj = cv2.imread("test.jpg")
+sj = cv2.resize(sj, (32, 32), interpolation = cv2.INTER_AREA)
+tmp = np.zeros((1, sj.shape[2], sj.shape[0], sj.shape[0]), dtype=float)
+for i, row in enumerate(sj):
+    for j, col in enumerate(row):
+        for k, entry in enumerate(col):
+            tmp[0][k][i][j] = entry/255.0
+sjTensor = torch.Tensor(tmp)
+outputs = net(sjTensor)
+_, predicted = torch.max(outputs, 1)
+print(classes[predicted])
