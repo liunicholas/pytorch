@@ -50,7 +50,7 @@ class Net(nn.Module):
 
         # Kernel: 5 x 5, Stride: (1, 1), output 6 layers, padding = 0 px
         # So Output size = 28 x 28 x 6 = 4704
-        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.conv1 = nn.Conv2d(3, 100, 5)
 
         # Kernel: 2 x 2, Stride: (2, 2)
         # So Output size = 14 x 14 x 6 = 1176
@@ -61,7 +61,7 @@ class Net(nn.Module):
 
         # Kernel: 5 x 5, Stride: (1, 1), output 16 layers, padding = 0 px
         # So output size = 10 x 10 x 16 = 1600
-        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.conv2 = nn.Conv2d(100, 100, 5)
 
         # The convolution below made sense as a third convolution with:
         # conv1 = 7x7, S=1, P=0, Layers = 6
@@ -86,7 +86,7 @@ class Net(nn.Module):
         # Repeat MaxPool2d
         # Then Output size = 5 x 5 x 16 = 400
 
-        self.fc1 = nn.Linear(400, 120)
+        self.fc1 = nn.Linear(2500, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
@@ -99,7 +99,7 @@ class Net(nn.Module):
         # x = self.batchNormalization16(x)
         x = self.pool2(x)
         # x = self.dropout20(x)
-        x = x.view(-1, 400)
+        x = x.view(-1, 2500)
         x = self.activation(self.fc1(x))
         # x = self.batchNormalization120(x)
         x = self.activation(self.fc2(x))
