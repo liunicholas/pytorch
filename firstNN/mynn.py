@@ -27,8 +27,8 @@ TRAIN_EPOCHS = 20
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
 SAVE_LAST = False
-BATCH_SIZE_TRAIN = 4
-BATCH_SIZE_TEST = 4
+BATCH_SIZE_TRAIN = 1
+BATCH_SIZE_TEST = 1
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -97,10 +97,9 @@ class Net(nn.Module):
 
         #13 x 13 x 36
 
-        self.fc1 = nn.Linear(6084, 2400)
+        self.fc1 = nn.Linear(5184, 2400)
         self.fc2 = nn.Linear(2400, 1200)
         self.fc3 = nn.Linear(1200, 600)
-        self.fc4 = nn.Linear(1200, 600)
         self.fc5 = nn.Linear(600, 300)
         self.fc6 = nn.Linear(300, 120)
         self.fc7 = nn.Linear(120, 60)
@@ -116,13 +115,12 @@ class Net(nn.Module):
         # x = self.batchNormalization16(x)
         x = self.pool2(x)
         # x = self.dropout20(x)
-        x = x.view(-1, 6084)
+        x = x.view(-1, 5184)
         x = self.activation(self.fc1(x))
         # x = self.batchNormalization120(x)
         x = self.activation(self.fc2(x))
         # x = self.batchNormalization84(x)
         x = self.activation(self.fc3(x))
-        x = self.activation(self.fc4(x))
         x = self.activation(self.fc5(x))
         x = self.activation(self.fc6(x))
         x = self.activation(self.fc7(x))
