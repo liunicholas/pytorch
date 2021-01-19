@@ -1,19 +1,25 @@
-cuda:0
+cpu
 [INFO] Done importing packages.
 [INFO] Loading Traning and Test Datasets.
 [INFO] Done loading data.
 Network: Net(
   (conv1): Conv2d(3, 12, kernel_size=(3, 3), stride=(1, 1))
-  (pool2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (pool2): MaxPool2d(kernel_size=3, stride=3, padding=0, dilation=1, ceil_mode=False)
   (conv2): Conv2d(12, 36, kernel_size=(3, 3), stride=(1, 1))
-  (fc1): Linear(in_features=5184, out_features=2400, bias=True)
-  (fc2): Linear(in_features=2400, out_features=1200, bias=True)
-  (fc3): Linear(in_features=1200, out_features=600, bias=True)
-  (fc5): Linear(in_features=600, out_features=300, bias=True)
-  (fc6): Linear(in_features=300, out_features=120, bias=True)
-  (fc7): Linear(in_features=120, out_features=60, bias=True)
+  (fc7): Linear(in_features=144, out_features=60, bias=True)
   (fc8): Linear(in_features=60, out_features=30, bias=True)
   (fc9): Linear(in_features=30, out_features=10, bias=True)
 )
-[TIMER] Process Time so far: 3.39062 seconds
+[TIMER] Process Time so far: 2.81668 seconds
 Beginning Epoch 1...
+Epoch: 1, Mini-Batches Processed:   500, Loss: 0.57747
+Epoch: 1, Mini-Batches Processed:  1000, Loss: 0.57562
+Epoch: 1, Mini-Batches Processed:  1500, Loss: 0.57541
+Epoch: 1, Mini-Batches Processed:  2000, Loss: 0.57515
+Epoch: 1, Mini-Batches Processed:  2500, Loss: 0.57519
+Epoch: 1, Mini-Batches Processed:  3000, Loss: 0.57276
+Epoch: 1, Mini-Batches Processed:  3500, Loss: 0.56527
+Epoch: 1, Mini-Batches Processed:  4000, Loss: 0.55836
+Epoch: 1, Mini-Batches Processed:  4500, Loss: 0.55498
+Epoch: 1, Mini-Batches Processed:  5000, Loss: 0.54175
+Epoch: 1, Mini-Batches Processed:  5500, Loss: 0.52833

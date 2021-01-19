@@ -60,7 +60,7 @@ class Net(nn.Module):
         # Notice that layers of a Pool are same are previous Conv.
 
         #30 by 30 to 15 by 15
-        self.pool2 = nn.MaxPool2d(2, 2)
+        self.pool2 = nn.MaxPool2d(3, 3)
 
         # For trying out 3 x 3 kernel, Stride: (3, 3)
         # self.pool3 = nn.MaxPool2d(3, 3)
@@ -97,12 +97,16 @@ class Net(nn.Module):
 
         #13 x 13 x 36
 
-        self.fc1 = nn.Linear(5184, 2400)
-        self.fc2 = nn.Linear(2400, 1200)
-        self.fc3 = nn.Linear(1200, 600)
-        self.fc5 = nn.Linear(600, 300)
-        self.fc6 = nn.Linear(300, 120)
-        self.fc7 = nn.Linear(120, 60)
+        # self.fc1 = nn.Linear(5184, 2400)
+        # self.fc2 = nn.Linear(2400, 1200)
+        # self.fc3 = nn.Linear(1200, 600)
+        # self.fc5 = nn.Linear(600, 300)
+        # self.fc6 = nn.Linear(300, 120)
+        # self.fc7 = nn.Linear(120, 60)
+        # self.fc8 = nn.Linear(60, 30)
+        # self.fc9 = nn.Linear(30, 10)
+
+        self.fc7 = nn.Linear(144, 60)
         self.fc8 = nn.Linear(60, 30)
         self.fc9 = nn.Linear(30, 10)
 
@@ -115,14 +119,14 @@ class Net(nn.Module):
         # x = self.batchNormalization16(x)
         x = self.pool2(x)
         # x = self.dropout20(x)
-        x = x.view(-1, 5184)
-        x = self.activation(self.fc1(x))
-        # x = self.batchNormalization120(x)
-        x = self.activation(self.fc2(x))
-        # x = self.batchNormalization84(x)
-        x = self.activation(self.fc3(x))
-        x = self.activation(self.fc5(x))
-        x = self.activation(self.fc6(x))
+        x = x.view(-1, 144)
+        # x = self.activation(self.fc1(x))
+        # # x = self.batchNormalization120(x)
+        # x = self.activation(self.fc2(x))
+        # # x = self.batchNormalization84(x)
+        # x = self.activation(self.fc3(x))
+        # x = self.activation(self.fc5(x))
+        # x = self.activation(self.fc6(x))
         x = self.activation(self.fc7(x))
         x = self.activation(self.fc8(x))
         x = self.fc9(x)
