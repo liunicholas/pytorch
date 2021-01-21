@@ -27,8 +27,8 @@ TRAIN_EPOCHS = 20
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
 SAVE_LAST = False
-BATCH_SIZE_TRAIN = 1
-BATCH_SIZE_TEST = 1
+BATCH_SIZE_TRAIN = 4
+BATCH_SIZE_TEST = 4
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
