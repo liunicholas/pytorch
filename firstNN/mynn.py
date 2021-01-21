@@ -70,7 +70,7 @@ class Net(nn.Module):
 
         #12 input, 36 output, 3 frame size, 1 stride
         self.conv2 = nn.Conv2d(12, 36, 3)
-        #13 frame output, 36 layers
+        #28 frame output, 36 layers
 
         # The convolution below made sense as a third convolution with:
         # conv1 = 7x7, S=1, P=0, Layers = 6
@@ -95,38 +95,41 @@ class Net(nn.Module):
         # Repeat MaxPool2d
         # Then Output size = 5 x 5 x 16 = 400
 
-        #13 x 13 x 36
+        #28 x 28 x 36
 
-        # self.fc1 = nn.Linear(5184, 2400)
-        # self.fc2 = nn.Linear(2400, 1200)
-        # self.fc3 = nn.Linear(1200, 600)
-        # self.fc5 = nn.Linear(600, 300)
-        # self.fc6 = nn.Linear(300, 120)
-        # self.fc7 = nn.Linear(120, 60)
+        self.fc1 = nn.Linear(28224, 2400)
+        self.fc2 = nn.Linear(2400, 1200)
+        self.fc3 = nn.Linear(1200, 600)
+        self.fc5 = nn.Linear(600, 300)
+        self.fc6 = nn.Linear(300, 120)
+        self.fc7 = nn.Linear(120, 60)
+        self.fc8 = nn.Linear(60, 30)
+        self.fc9 = nn.Linear(30, 10)
+
+        # self.fc7 = nn.Linear(144, 60)
         # self.fc8 = nn.Linear(60, 30)
         # self.fc9 = nn.Linear(30, 10)
 
-        self.fc7 = nn.Linear(144, 60)
-        self.fc8 = nn.Linear(60, 30)
-        self.fc9 = nn.Linear(30, 10)
+        # self.fc1 = nn.Linear()
+        # self.fc2 = nn.Linear()
 
     def forward(self, x):
         x = self.activation(self.conv1(x))
         # x = self.batchNormalization6(x)
-        x = self.pool2(x)
+        # x = self.pool2(x)
         # x = self.dropout10(x)
         x = self.activation(self.conv2(x))
         # x = self.batchNormalization16(x)
-        x = self.pool2(x)
+        # x = self.pool2(x)
         # x = self.dropout20(x)
-        x = x.view(-1, 144)
-        # x = self.activation(self.fc1(x))
-        # # x = self.batchNormalization120(x)
-        # x = self.activation(self.fc2(x))
-        # # x = self.batchNormalization84(x)
-        # x = self.activation(self.fc3(x))
-        # x = self.activation(self.fc5(x))
-        # x = self.activation(self.fc6(x))
+        x = x.view(-1, 28224)
+        x = self.activation(self.fc1(x))
+        # x = self.batchNormalization120(x)
+        x = self.activation(self.fc2(x))
+        # x = self.batchNormalization84(x)
+        x = self.activation(self.fc3(x))
+        x = self.activation(self.fc5(x))
+        x = self.activation(self.fc6(x))
         x = self.activation(self.fc7(x))
         x = self.activation(self.fc8(x))
         x = self.fc9(x)
