@@ -22,7 +22,7 @@ fout = open('rtx2060.txt', 'w')
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
-TRAIN_EPOCHS = 20
+TRAIN_EPOCHS = 30
 # If you want to save the model at every epoch in a subfolder set to 'True'
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
@@ -50,90 +50,91 @@ class Net(nn.Module):
         # Ex. to use stride = 2 and padding = 1 we would do:
         # nn.Conv2d(3, 6, 5, stride = 2, padding = 1)
 
-        #3 input, 12 output layers, 3 frame size, 1 stride
-        self.conv1 = nn.Conv2d(3, 12, 3)
-        #30 frame ouput, 12 layers
+        self.conv1 = nn.Conv2d(3, 64, 1)
 
-        # Kernel: 2 x 2, Stride: (2, 2)
-        # So Output size = 14 x 14 x 6 = 1176
-        ### Inputs to MaxPool2d: Frame/Kernal, stride
-        # Notice that layers of a Pool are same are previous Conv.
+        self.pool1 = nn.MaxPool2d(2, 2)
 
-        #30 by 30 to 15 by 15
-        self.pool2 = nn.MaxPool2d(3, 3)
+        self.conv2 = nn.Conv2d(64, 128, 1)
 
-        # For trying out 3 x 3 kernel, Stride: (3, 3)
-        # self.pool3 = nn.MaxPool2d(3, 3)
+        self.pool2 = nn.MaxPool2d(2, 2)
 
-        # Kernel: 5 x 5, Stride: (1, 1), output 16 layers, padding = 0 px
-        # So output size = 10 x 10 x 16 = 1600
+        self.conv3 = nn.Conv2d(128, 256, 1)
 
-        #12 input, 36 output, 3 frame size, 1 stride
-        self.conv2 = nn.Conv2d(12, 36, 3)
-        #28 frame output, 36 layers
+        self.pool3 = nn.MaxPool2d(2, 2)
 
-        # The convolution below made sense as a third convolution with:
-        # conv1 = 7x7, S=1, P=0, Layers = 6
-        # conv2 = 3x3, S=1, P=0, Layers = 16
-        # self.conv3 = nn.Conv2d(16, 16, 3)
+        #4x4x256
 
-        # Experiment with a couple of different Dropout layers
-        # These will not change input/output sizes.
-        # self.dropout10 = nn.Dropout(p=0.1)
-        # self.dropout20 = nn.Dropout(p=0.2)
-        # self.dropout50 = nn.Dropout(p=0.5)
+        self.dropout10 = nn.Dropout(p=0.1)
+        self.dropout20 = nn.Dropout(p=0.2)
+        self.dropout50 = nn.Dropout(p=0.5)
 
         # Activation function to use
         self.activation = F.relu
 
         # Batch Normalization functions
-        # self.batchNormalization6 = nn.BatchNorm2d(6)
-        # self.batchNormalization16 = nn.BatchNorm2d(16)
-        # self.batchNormalization120 = nn.BatchNorm1d(120)
-        # self.batchNormalization84 = nn.BatchNorm1d(84)
+        self.batchNormalization1 = nn.BatchNorm2d(64)
+        self.batchNormalization2 = nn.BatchNorm2d(128)
+        self.batchNormalization3 = nn.BatchNorm2d(256)
 
-        # Repeat MaxPool2d
-        # Then Output size = 5 x 5 x 16 = 400
+        self.batchNormalization4 = nn.BatchNorm1d(2400)
+        self.batchNormalization5 = nn.BatchNorm1d(1200)
+        self.batchNormalization6 = nn.BatchNorm1d(600)
+        self.batchNormalization7 = nn.BatchNorm1d(300)
+        self.batchNormalization8 = nn.BatchNorm1d(120)
+        self.batchNormalization9 = nn.BatchNorm1d(60)
+        self.batchNormalization10 = nn.BatchNorm1d(30)
 
-        #28 x 28 x 36
 
-        self.fc1 = nn.Linear(28224, 2400)
+
+        self.fc1 = nn.Linear(4096, 2400)
         self.fc2 = nn.Linear(2400, 1200)
         self.fc3 = nn.Linear(1200, 600)
-        self.fc5 = nn.Linear(600, 300)
-        self.fc6 = nn.Linear(300, 120)
-        self.fc7 = nn.Linear(120, 60)
-        self.fc8 = nn.Linear(60, 30)
-        self.fc9 = nn.Linear(30, 10)
-
-        # self.fc7 = nn.Linear(144, 60)
-        # self.fc8 = nn.Linear(60, 30)
-        # self.fc9 = nn.Linear(30, 10)
-
-        # self.fc1 = nn.Linear()
-        # self.fc2 = nn.Linear()
+        self.fc4 = nn.Linear(600, 300)
+        self.fc5 = nn.Linear(300, 120)
+        self.fc6 = nn.Linear(120, 60)
+        self.fc7 = nn.Linear(60, 30)
+        self.fc8 = nn.Linear(30, 10)
 
     def forward(self, x):
         x = self.activation(self.conv1(x))
-        # x = self.batchNormalization6(x)
-        # x = self.pool2(x)
-        # x = self.dropout10(x)
+        x = self.batchNormalization1(x)
+        x = self.pool1(x)
+        x = self.dropout50(x)
+
         x = self.activation(self.conv2(x))
-        # x = self.batchNormalization16(x)
-        # x = self.pool2(x)
-        # x = self.dropout20(x)
-        x = x.view(-1, 28224)
+        x = self.batchNormalization2(x)
+        x = self.pool2(x)
+        x = self.dropout50(x)
+
+        x = self.activation(self.conv3(x))
+        x = self.batchNormalization3(x)
+        x = self.pool3(x)
+        x = self.dropout50(x)
+
+        x = x.view(-1, 4096)
+
         x = self.activation(self.fc1(x))
-        # x = self.batchNormalization120(x)
+        x = self.batchNormalization4(x)
+
         x = self.activation(self.fc2(x))
-        # x = self.batchNormalization84(x)
+        x = self.batchNormalization5(x)
+
         x = self.activation(self.fc3(x))
+        x = self.batchNormalization6(x)
+
+        x = self.activation(self.fc4(x))
+        x = self.batchNormalization7(x)
+
         x = self.activation(self.fc5(x))
+        x = self.batchNormalization8(x)
+
         x = self.activation(self.fc6(x))
+        x = self.batchNormalization9(x)
+
         x = self.activation(self.fc7(x))
-        x = self.activation(self.fc8(x))
-        x = self.fc9(x)
-        # x = self.dropout50(x)
+        x = self.batchNormalization10(x)
+
+        x = self.fc8(x)
         return x
 
 def imshow(img):
