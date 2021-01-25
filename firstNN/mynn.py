@@ -84,8 +84,6 @@ class Net(nn.Module):
         self.batchNormalization9 = nn.BatchNorm1d(60)
         self.batchNormalization10 = nn.BatchNorm1d(30)
 
-
-
         self.fc1 = nn.Linear(50176, 2400)
         self.fc2 = nn.Linear(2400, 1200)
         self.fc3 = nn.Linear(1200, 600)
