@@ -27,8 +27,8 @@ TRAIN_EPOCHS = 50
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
 SAVE_LAST = False
-BATCH_SIZE_TRAIN = 4
-BATCH_SIZE_TEST = 4
+BATCH_SIZE_TRAIN = 12
+BATCH_SIZE_TEST = 12
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -50,19 +50,21 @@ class Net(nn.Module):
         # Ex. to use stride = 2 and padding = 1 we would do:
         # nn.Conv2d(3, 6, 5, stride = 2, padding = 1)
 
-        self.conv1 = nn.Conv2d(3, 64, 3)
+        self.conv1 = nn.Conv2d(3, 16, 3)
 
-        self.pool1 = nn.MaxPool2d(2, 2)
+        # self.pool1 = nn.MaxPool2d(2, 2)
 
-        self.conv2 = nn.Conv2d(64, 128, 3)
+        self.conv2 = nn.Conv2d(16, 32, 3, padding = 1)
 
         # self.pool2 = nn.MaxPool2d(2, 2)
 
-        self.conv3 = nn.Conv2d(128, 256, 3, padding = 2)
+        self.conv3 = nn.Conv2d(32, 64, 3, padding = 1)
 
-        self.pool3 = nn.MaxPool2d(3, 3)
+        # self.pool3 = nn.MaxPool2d(3, 3)
 
-        # self.conv4 = nn.Conv2d(256, 512, 3)
+        self.conv4 = nn.Conv2d(64, 128, 5, stride = 3, padding = 1)
+
+        self.pool4 = nn.MaxPool2d(2, 2)
 
         #28x28x256
 
@@ -71,12 +73,13 @@ class Net(nn.Module):
         # self.dropout50 = nn.Dropout(p=0.5)
 
         # Activation function to use
-        self.activation = F.relu
+        self.activation = F.leaky_relu
 
         # Batch Normalization functions
-        self.batchNormalization1 = nn.BatchNorm2d(64)
-        self.batchNormalization2 = nn.BatchNorm2d(128)
-        self.batchNormalization3 = nn.BatchNorm2d(256)
+        self.batchNormalization1 = nn.BatchNorm2d(16)
+        self.batchNormalization2 = nn.BatchNorm2d(32)
+        self.batchNormalization3 = nn.BatchNorm2d(64)
+        self.batchNormalization11 = nn.BatchNorm2d(128)
 
         self.batchNormalization4 = nn.BatchNorm1d(2400)
         self.batchNormalization5 = nn.BatchNorm1d(1200)
@@ -86,7 +89,7 @@ class Net(nn.Module):
         self.batchNormalization9 = nn.BatchNorm1d(60)
         self.batchNormalization10 = nn.BatchNorm1d(30)
 
-        self.fc1 = nn.Linear(6400, 2400)
+        self.fc1 = nn.Linear(3200, 2400)
         self.fc2 = nn.Linear(2400, 1200)
         self.fc3 = nn.Linear(1200, 600)
         self.fc4 = nn.Linear(600, 300)
@@ -98,7 +101,7 @@ class Net(nn.Module):
     def forward(self, x):
         x = self.activation(self.conv1(x))
         x = self.batchNormalization1(x)
-        x = self.pool1(x)
+        # x = self.pool1(x)
         # x = self.dropout50(x)
 
         x = self.activation(self.conv2(x))
@@ -108,33 +111,35 @@ class Net(nn.Module):
 
         x = self.activation(self.conv3(x))
         x = self.batchNormalization3(x)
-        x = self.pool3(x)
+        # x = self.pool3(x)
         # x = self.dropout50(x)
 
-        # x = self.activation(self.conv4(x))
+        x = self.activation(self.conv4(x))
+        x = self.batchNormalization11(x)
+        x = self.pool4(x)
 
-        x = x.view(-1, 6400)
+        x = x.view(-1, 3200)
 
         x = self.activation(self.fc1(x))
-        x = self.batchNormalization4(x)
+        # x = self.batchNormalization4(x)
 
         x = self.activation(self.fc2(x))
-        x = self.batchNormalization5(x)
+        # x = self.batchNormalization5(x)
 
         x = self.activation(self.fc3(x))
-        x = self.batchNormalization6(x)
+        # x = self.batchNormalization6(x)
 
         x = self.activation(self.fc4(x))
-        x = self.batchNormalization7(x)
+        # x = self.batchNormalization7(x)
 
         x = self.activation(self.fc5(x))
-        x = self.batchNormalization8(x)
+        # x = self.batchNormalization8(x)
 
         x = self.activation(self.fc6(x))
-        x = self.batchNormalization9(x)
+        # x = self.batchNormalization9(x)
 
         x = self.activation(self.fc7(x))
-        x = self.batchNormalization10(x)
+        # x = self.batchNormalization10(x)
 
         x = self.fc8(x)
         return x
