@@ -22,7 +22,7 @@ fout = open('rtx2060.txt', 'w')
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
-TRAIN_EPOCHS = 30
+TRAIN_EPOCHS = 50
 # If you want to save the model at every epoch in a subfolder set to 'True'
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
@@ -52,21 +52,23 @@ class Net(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 64, 3)
 
-        # self.pool1 = nn.MaxPool2d(2, 2)
+        self.pool1 = nn.MaxPool2d(2, 2)
 
         self.conv2 = nn.Conv2d(64, 128, 3)
 
         # self.pool2 = nn.MaxPool2d(2, 2)
 
-        self.conv3 = nn.Conv2d(128, 256, 3, padding = 1)
+        self.conv3 = nn.Conv2d(128, 256, 3, padding = 2)
 
-        self.pool3 = nn.MaxPool2d(2, 2)
+        self.pool3 = nn.MaxPool2d(3, 3)
+
+        # self.conv4 = nn.Conv2d(256, 512, 3)
 
         #28x28x256
 
-        self.dropout10 = nn.Dropout(p=0.1)
-        self.dropout20 = nn.Dropout(p=0.2)
-        self.dropout50 = nn.Dropout(p=0.5)
+        # self.dropout10 = nn.Dropout(p=0.1)
+        # self.dropout20 = nn.Dropout(p=0.2)
+        # self.dropout50 = nn.Dropout(p=0.5)
 
         # Activation function to use
         self.activation = F.relu
@@ -84,7 +86,7 @@ class Net(nn.Module):
         self.batchNormalization9 = nn.BatchNorm1d(60)
         self.batchNormalization10 = nn.BatchNorm1d(30)
 
-        self.fc1 = nn.Linear(50176, 2400)
+        self.fc1 = nn.Linear(6400, 2400)
         self.fc2 = nn.Linear(2400, 1200)
         self.fc3 = nn.Linear(1200, 600)
         self.fc4 = nn.Linear(600, 300)
@@ -96,20 +98,22 @@ class Net(nn.Module):
     def forward(self, x):
         x = self.activation(self.conv1(x))
         x = self.batchNormalization1(x)
-        # x = self.pool1(x)
-        x = self.dropout50(x)
+        x = self.pool1(x)
+        # x = self.dropout50(x)
 
         x = self.activation(self.conv2(x))
         x = self.batchNormalization2(x)
         # x = self.pool2(x)
-        x = self.dropout50(x)
+        # x = self.dropout50(x)
 
         x = self.activation(self.conv3(x))
         x = self.batchNormalization3(x)
         x = self.pool3(x)
-        x = self.dropout50(x)
+        # x = self.dropout50(x)
 
-        x = x.view(-1, 50176)
+        # x = self.activation(self.conv4(x))
+
+        x = x.view(-1, 6400)
 
         x = self.activation(self.fc1(x))
         x = self.batchNormalization4(x)
