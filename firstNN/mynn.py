@@ -66,7 +66,7 @@ class Net(nn.Module):
 
         self.pool4 = nn.MaxPool2d(2, 2)
 
-        #28x28x256
+        #5x5x128
 
         # self.dropout10 = nn.Dropout(p=0.1)
         # self.dropout20 = nn.Dropout(p=0.2)
