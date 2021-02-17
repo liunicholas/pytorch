@@ -1,0 +1,79 @@
+cpu
+[INFO] Done importing packages.
+[INFO] Loading Traning and Test Datasets.
+[INFO] Done loading data.
+Network: Net(
+  (conv1): Conv2d(3, 16, kernel_size=(3, 3), stride=(1, 1))
+  (conv2): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (conv3): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (conv4): Conv2d(64, 128, kernel_size=(5, 5), stride=(3, 3), padding=(1, 1))
+  (pool4): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (batchNormalization1): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization11): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization4): BatchNorm1d(2400, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization5): BatchNorm1d(1200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization6): BatchNorm1d(600, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization7): BatchNorm1d(300, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization8): BatchNorm1d(120, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization9): BatchNorm1d(60, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (batchNormalization10): BatchNorm1d(30, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (fc1): Linear(in_features=3200, out_features=2400, bias=True)
+  (fc2): Linear(in_features=2400, out_features=1200, bias=True)
+  (fc3): Linear(in_features=1200, out_features=600, bias=True)
+  (fc4): Linear(in_features=600, out_features=300, bias=True)
+  (fc5): Linear(in_features=300, out_features=120, bias=True)
+  (fc6): Linear(in_features=120, out_features=60, bias=True)
+  (fc7): Linear(in_features=60, out_features=30, bias=True)
+  (fc8): Linear(in_features=30, out_features=10, bias=True)
+)
+[TIMER] Process Time so far: 2.86865 seconds
+Beginning Epoch 1...
+Epoch: 1, Mini-Batches Processed:   500, Loss: 0.57658
+Epoch: 1, Mini-Batches Processed:  1000, Loss: 0.57573
+Epoch: 1, Mini-Batches Processed:  1500, Loss: 0.57481
+Epoch: 1, Mini-Batches Processed:  2000, Loss: 0.57227
+Epoch: 1, Mini-Batches Processed:  2500, Loss: 0.54716
+Epoch: 1, Mini-Batches Processed:  3000, Loss: 0.48132
+Epoch: 1, Mini-Batches Processed:  3500, Loss: 0.46891
+Epoch: 1, Mini-Batches Processed:  4000, Loss: 0.4581
+[TIMER] Process Time so far: 2165.16 seconds
+Starting validation...
+[TRAINING] 14525 out of 50000
+[VALIDATION] 2927 out of 10000
+[TIMER] Process Time so far: 2795.31 seconds
+Beginning Epoch 2...
+Epoch: 2, Mini-Batches Processed:   500, Loss: 0.43312
+Epoch: 2, Mini-Batches Processed:  1000, Loss: 0.42577
+Epoch: 2, Mini-Batches Processed:  1500, Loss: 0.41115
+Epoch: 2, Mini-Batches Processed:  2000, Loss: 0.40536
+Epoch: 2, Mini-Batches Processed:  2500, Loss: 0.39356
+Epoch: 2, Mini-Batches Processed:  3000, Loss: 0.39184
+Epoch: 2, Mini-Batches Processed:  3500, Loss: 0.37393
+Epoch: 2, Mini-Batches Processed:  4000, Loss: 0.37057
+[TIMER] Process Time so far: 4947.43 seconds
+Starting validation...
+[TRAINING] 23846 out of 50000
+[VALIDATION] 4584 out of 10000
+[TIMER] Process Time so far: 5580.64 seconds
+Beginning Epoch 3...
+Epoch: 3, Mini-Batches Processed:   500, Loss: 0.34876
+Epoch: 3, Mini-Batches Processed:  1000, Loss: 0.33929
+Epoch: 3, Mini-Batches Processed:  1500, Loss: 0.32761
+Epoch: 3, Mini-Batches Processed:  2000, Loss: 0.31382
+Epoch: 3, Mini-Batches Processed:  2500, Loss: 0.30818
+Epoch: 3, Mini-Batches Processed:  3000, Loss: 0.29028
+Epoch: 3, Mini-Batches Processed:  3500, Loss: 0.27933
+Epoch: 3, Mini-Batches Processed:  4000, Loss: 0.2719
+[TIMER] Process Time so far: 7780.08 seconds
+Starting validation...
+[TRAINING] 32888 out of 50000
+[VALIDATION] 6254 out of 10000
+[TIMER] Process Time so far: 8394.51 seconds
+Beginning Epoch 4...
+Epoch: 4, Mini-Batches Processed:   500, Loss: 0.24183
+Epoch: 4, Mini-Batches Processed:  1000, Loss: 0.23322
+Epoch: 4, Mini-Batches Processed:  1500, Loss: 0.23584
+Epoch: 4, Mini-Batches Processed:  2000, Loss: 0.23222
+Epoch: 4, Mini-Batches Processed:  2500, Loss: 0.22626
